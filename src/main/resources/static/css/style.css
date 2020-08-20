@@ -1,0 +1,33 @@
+body {
+    display: inline-block;
+    text-align: center;
+    width: 98%;
+    font-family: sans-serif;
+    font-size: 22px;
+   background-image: url("/jpg/bg1.jpg");
+    background-repeat: no-repeat;
+    background-size: cover;
+}
+
+header {
+    font-style: italic;
+    font-size: 40px;
+    text-align: center;
+}
+
+input, select, button {
+    box-shadow: 2px 2px gray;
+    width: 17%;
+    height: 17%;
+}
+
+#error-panel,#error-panel-2,#error-panel-rate{
+    color: indianred;
+}
+#transactions-table{
+    font-size: 15px;
+}
+
+
+
+
