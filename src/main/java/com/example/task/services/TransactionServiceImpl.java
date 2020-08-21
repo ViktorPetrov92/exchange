@@ -21,6 +21,7 @@ public class TransactionServiceImpl implements TransactionService {
 
     private static final String TIME_FORMAT = "yyyy-MM-dd HH:mm:ss";
 
+    // This is a function to create and store new transaction in database.
     @Override
     public Transaction create(TransactionDTO dto) {
         Transaction transaction = new Transaction();
@@ -39,11 +40,13 @@ public class TransactionServiceImpl implements TransactionService {
         }
     }
 
+    // Function to simply get all transaction by given date
     @Override
     public List<Transaction> getTransactionsByDate(String date) {
         return transactionRepository.getAllByDateContaining(date);
     }
 
+    // Generate unique ID for every new transaction
     private int GenerateUniqueId() {
         Random ran = new Random();
         return ran.nextInt(100000000);

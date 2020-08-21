@@ -5,7 +5,8 @@ $(function () {
     getExchange();
     getTransactions();
 });
-
+// First function is to get current rate between given currency's
+// First we check if the input is correct and then we fetch from API the result
 function getExchangeCurrencyRate() {
     $(".get-rate").on("click", "", function () {
         let currentCurrency = $("#current-currency").val();
@@ -33,6 +34,9 @@ function getExchangeCurrencyRate() {
     })
 }
 
+// Second functions is to get exchange rate by given amount and currency's.
+// First we check for valid input. Then we fetch the result from the API and send another
+// to our API to create and store the transaction. Then we return the unique ID and the result
 function getExchange() {
     $("#get-exchange").on("click", "", function () {
         let currentCurrency = $("#current-currency-exchange").val();
@@ -89,7 +93,8 @@ function getExchange() {
         }
     })
 }
-
+// Third function is to get all transaction by given date.
+// The result is list of transactions , but the dataTable function puts it in paged table
 function getTransactions() {
     $("#get-transactions").on("click", "", function () {
         let date = $("#wanted-date").val();

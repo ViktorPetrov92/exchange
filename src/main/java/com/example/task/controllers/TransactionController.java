@@ -13,12 +13,14 @@ import javax.persistence.EntityNotFoundException;
 import javax.validation.Valid;
 import java.util.List;
 
+// This is the RestAPI we need to store and get transactions
 @RestController
 @RequestMapping("/api/transaction")
 @RequiredArgsConstructor
 public class TransactionController {
     private final TransactionServiceImpl transactionService;
 
+    // By given input from the user we send DTO to the service and create and store new transaction
     @PostMapping
     public Transaction create(@RequestBody @Valid TransactionDTO dto) {
         try {
@@ -28,6 +30,7 @@ public class TransactionController {
         }
     }
 
+    // By given date by the user we get all transactions from database
     @GetMapping("/filter")
     public List<Transaction> getAllByDate(@RequestParam String date) {
         return transactionService.getTransactionsByDate(date);

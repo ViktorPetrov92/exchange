@@ -1,4 +1,4 @@
-package com.example.task.config;
+package com.example.task.configurations;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -14,16 +14,18 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 import javax.sql.DataSource;
 import java.util.Properties;
 
+// This is Hibernate Configuration class where we set the connection with database
+// and tell Spring boot where to scan for components
 @ComponentScan(basePackages = {"com.example.task.*"})
 @Configuration
 @EnableJpaRepositories(basePackages = "com.example.task.repositories")
 @EnableTransactionManagement
 @PropertySource("classpath:application.properties")
-public class HibernateConfig {
+public class HibernateConfiguration {
     private String dbUrl, dbUsername, dbPassword;
 
     @Autowired
-    public HibernateConfig(Environment env) {
+    public HibernateConfiguration(Environment env) {
         dbUrl = env.getProperty("database.url");
         dbUsername = env.getProperty("database.username");
         dbPassword = env.getProperty("database.password");
