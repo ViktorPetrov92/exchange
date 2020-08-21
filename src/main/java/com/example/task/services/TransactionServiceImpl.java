@@ -11,7 +11,7 @@ import javax.persistence.EntityExistsException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
-import java.util.Random;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -47,9 +47,8 @@ public class TransactionServiceImpl implements TransactionService {
     }
 
     // Generate unique ID for every new transaction
-    private int GenerateUniqueId() {
-        Random ran = new Random();
-        return ran.nextInt(100000000);
+    private String GenerateUniqueId() {
+        return UUID.randomUUID().toString();
     }
 
     private String getCurrentDate() {

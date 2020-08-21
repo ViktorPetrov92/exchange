@@ -21,7 +21,7 @@ public class Transaction {
     private int id;
 
     @Column(name = "unique_id")
-    private int uniqueId;
+    private String uniqueId;
 
     @Column(name = "current_value")
     private float currentValue;
