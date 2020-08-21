@@ -1,5 +1,5 @@
 # exchange
-This is a foreign exchange application. Created with java 8, Spring boot, Gradle, MariaDB, HTML, CSS, Javascript.
+This is a foreign exchange application. Created in IntelliJ Idea 2019(foro Lombok) with Java 8, Spring boot, Gradle, MariaDB, HTML, CSS, Javascript.
 The application request a Lombok library. For easy set up : https://www.baeldung.com/lombok-ide
 Also it needs a database. SQL script is given in resources package.
 From resources/application.properties you need to set username and password for your local database.
