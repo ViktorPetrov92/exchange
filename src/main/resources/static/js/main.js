@@ -37,18 +37,10 @@ function getExchange() {
         let targetCurrency = $("#target-currency-exchange").val();
         let amount = $("#exchange-value").val();
         let message = document.getElementById("error-panel");
-        let messageTwo = document.getElementById("error-panel-2");
 
-        // if (currentCurrency === "" || targetCurrency === "") {
-        //     messageTwo.innerHTML = "Please select currency";
-        // } else if (isNaN(amount)) {
-        //     message.innerHTML = "Input is not a number";
-        // } else if (amount === 0 || amount < 0 || amount === "") {
-        //     amount = 1;
-        //     message.innerHTML = "Cannot input negative number or zero";
-        // } else {
-        //     message.innerHTML = "";
-        //     messageTwo.innerHTML = "";
+        if (amount === "") {
+            amount = 0;
+        }
         fetch(
             "/api/rate/amount?currentCurrency=" + currentCurrency + "&targetCurrency=" + targetCurrency + "&amount=" + amount
         ).then((res) => res.json())
