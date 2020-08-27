@@ -13,20 +13,18 @@ function getExchangeCurrencyRate() {
 
         let error = document.getElementById("error-panel-rate");
 
-        if (currentCurrency === "" || targetCurrency === "") {
-            error.innerHTML = "Please select currency";
-        } else {
-            error.innerHTML = "";
-            fetch(
-                "/api/rate?currentCurrency=" + currentCurrency + "&targetCurrency=" + targetCurrency
-            ).then((res) => res.json())
-                .then(function (data) {
+        error.innerHTML = "";
+        fetch(
+            "/api/rate?currentCurrency=" + currentCurrency + "&targetCurrency=" + targetCurrency
+        ).then((res) => res.json())
+            .then(function (data) {
+                    if (data.status === 400) {
+                        error.innerHTML = data.message;
+                    } else {
                         $('#result').html(currentCurrency + ": 1 <==> " + targetCurrency + " : " + data);
                     }
-                ).catch(function () {
-                alert("Transaction unavailable at the moment. Try again in few minutes")
-            })
-        }
+                }
+            )
     })
 }
 
@@ -41,20 +39,23 @@ function getExchange() {
         let message = document.getElementById("error-panel");
         let messageTwo = document.getElementById("error-panel-2");
 
-        if (currentCurrency === "" || targetCurrency === "") {
-            messageTwo.innerHTML = "Please select currency";
-        } else if (isNaN(amount)) {
-            message.innerHTML = "Input is not a number";
-        } else if (amount === 0 || amount < 0 || amount === "") {
-            amount = 1;
-            message.innerHTML = "Cannot input negative number or zero";
-        } else {
-            message.innerHTML = "";
-            messageTwo.innerHTML = "";
-            fetch(
-                "/api/rate/amount?currentCurrency=" + currentCurrency + "&targetCurrency=" + targetCurrency + "&amount=" + amount
-            ).then((res) => res.json())
-                .then(function (data) {
+        // if (currentCurrency === "" || targetCurrency === "") {
+        //     messageTwo.innerHTML = "Please select currency";
+        // } else if (isNaN(amount)) {
+        //     message.innerHTML = "Input is not a number";
+        // } else if (amount === 0 || amount < 0 || amount === "") {
+        //     amount = 1;
+        //     message.innerHTML = "Cannot input negative number or zero";
+        // } else {
+        //     message.innerHTML = "";
+        //     messageTwo.innerHTML = "";
+        fetch(
+            "/api/rate/amount?currentCurrency=" + currentCurrency + "&targetCurrency=" + targetCurrency + "&amount=" + amount
+        ).then((res) => res.json())
+            .then(function (data) {
+                if (data.status === 400) {
+                    message.innerHTML = data.message;
+                } else {
                     let requestBody = {
                         "currentCurrency": currentCurrency,
                         "currentValue": amount,
@@ -74,13 +75,8 @@ function getExchange() {
                         .then(function (el) {
                             $('#result-2').html("Transaction id: " + el.uniqueId + " Result: " + data);
                         })
-                        .catch(function () {
-                            alert("Transaction incomplete. Try again in few minutes")
-                        })
-                })
-                .catch(function () {
-                    alert("Transaction unavailable at the moment. Try again in few minutes")
-                })
-        }
+                }
+            })
+
     })
 }

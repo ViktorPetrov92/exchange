@@ -3,6 +3,7 @@ package com.example.task.services;
 import com.example.task.entities.Transaction;
 import com.example.task.entities.dto.ExchangeRateDto;
 import com.example.task.entities.dto.TransactionDto;
+import com.example.task.exceptions.*;
 import com.example.task.repositories.TransactionRepository;
 import com.example.task.services.base.TransactionService;
 import com.fasterxml.jackson.core.type.TypeReference;
@@ -10,8 +11,8 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
@@ -37,16 +38,26 @@ public class TransactionServiceImpl implements TransactionService {
     // This is a function to create and store new transaction in database.
     @Override
     public Transaction create(TransactionDto dto) {
-        Transaction transaction = new Transaction();
-        transaction.setUniqueId(GenerateUniqueId());
-        transaction.setCurrentValue(dto.getCurrentValue());
-        transaction.setCurrentCurrency(dto.getCurrentCurrency());
-        transaction.setTargetCurrency(dto.getTargetCurrency());
-        transaction.setTargetValue(dto.getTargetValue());
-        transaction.setDate(getCurrentDate());
+        if (dto.getCurrentCurrency().equals("")) {
+            throw new InvalidInputException("Select current currency");
+        } else if (dto.getTargetCurrency().equals("")) {
+            throw new InvalidInputException("Select target currency");
+        } else if (dto.getCurrentValue() == 0 || dto.getCurrentValue() < 0 || !isNumber(Float.toString(dto.getCurrentValue()))) {
+            throw new InvalidInputException("Current amount must be a positive number!");
+        } else if (dto.getTargetValue() == 0 || dto.getTargetValue() < 0 || !isNumber(Float.toString(dto.getTargetValue()))) {
+            throw new InvalidInputException("Target amount must be a positive number!");
+        } else {
+            Transaction transaction = new Transaction();
+            transaction.setUniqueId(GenerateUniqueId());
+            transaction.setCurrentValue(dto.getCurrentValue());
+            transaction.setCurrentCurrency(dto.getCurrentCurrency());
+            transaction.setTargetCurrency(dto.getTargetCurrency());
+            transaction.setTargetValue(dto.getTargetValue());
+            transaction.setDate(getCurrentDate());
 
-        transactionRepository.save(transaction);
-        return transaction;
+            transactionRepository.save(transaction);
+            return transaction;
+        }
     }
 
     // Function to simply get all transaction by given date
@@ -58,28 +69,43 @@ public class TransactionServiceImpl implements TransactionService {
 
     @Override
     public float getExchangeRate(String currentCurrency, String targetCurrency) throws IOException, InterruptedException {
-        HttpClient client = HttpClient.newHttpClient();
-        HttpRequest request = HttpRequest.newBuilder()
-                .GET()
-                .header("accept", "application/json")
-                .uri(URI.create(EXCHANGE_URI + currentCurrency + "&symbols=" + targetCurrency))
-                .build();
-        String str = mapResponseToString(client, request);
-        return Float.parseFloat(str);
+        if (currentCurrency.equals("")) {
+            throw new InvalidInputException("Select current currency");
+        } else if (targetCurrency.equals("")) {
+            throw new InvalidInputException("Select target currency");
+        } else {
+            HttpClient client = HttpClient.newHttpClient();
+            HttpRequest request = HttpRequest.newBuilder()
+                    .GET()
+                    .header("accept", "application/json")
+                    .uri(URI.create(EXCHANGE_URI + currentCurrency + "&symbols=" + targetCurrency))
+                    .build();
+            String str = mapResponseToString(client, request);
+            return Float.parseFloat(str);
+        }
+
     }
 
     @Override
     public float getExchangeRateWithAmount(String currentCurrency, String targetCurrency, int amount) throws IOException, InterruptedException {
-        HttpClient client = HttpClient.newHttpClient();
-        HttpRequest request = HttpRequest.newBuilder()
-                .GET()
-                .header("accept", "application/json")
-                .uri(URI.create(EXCHANGE_URI + currentCurrency + "&symbols=" + targetCurrency + "&amount=" + amount))
-                .build();
+        if (currentCurrency.equals("")) {
+            throw new InvalidInputException("Select current currency!");
+        } else if (targetCurrency.equals("")) {
+            throw new InvalidInputException("Select target currency!");
+        } else if (amount == 0 || amount < 0 || !isNumber(Integer.toString(amount))) {
+            throw new InvalidInputException("Amount must be a positive number!");
+        } else {
+            HttpClient client = HttpClient.newHttpClient();
+            HttpRequest request = HttpRequest.newBuilder()
+                    .GET()
+                    .header("accept", "application/json")
+                    .uri(URI.create(EXCHANGE_URI + currentCurrency + "&symbols=" + targetCurrency + "&amount=" + amount))
+                    .build();
 
-        String str = mapResponseToString(client, request);
+            String str = mapResponseToString(client, request);
 
-        return Float.parseFloat(str);
+            return Float.parseFloat(str);
+        }
     }
 
 
@@ -101,5 +127,14 @@ public class TransactionServiceImpl implements TransactionService {
     private String getCurrentDate() {
         LocalDateTime localDate = LocalDateTime.now();
         return DateTimeFormatter.ofPattern(TIME_FORMAT).format(localDate);
+    }
+
+    private boolean isNumber(String num) {
+        try {
+            Double test = Double.parseDouble(num);
+        } catch (NumberFormatException nfe) {
+            return false;
+        }
+        return true;
     }
 }
