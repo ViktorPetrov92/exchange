@@ -1,13 +1,19 @@
 package com.example.task.services.base;
 
 import com.example.task.entities.Transaction;
-import com.example.task.entities.dto.TransactionDTO;
+import com.example.task.entities.dto.TransactionDto;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
-import java.util.List;
+import java.io.IOException;
 
 public interface TransactionService {
 
-    Transaction create(TransactionDTO dto);
+    Transaction create(TransactionDto dto);
 
-    List<Transaction> getTransactionsByDate(String date);
+    Page<Transaction> getTransactionsByDate(String date, Pageable pageable);
+
+    float getExchangeRate(String currentCurrency, String targetCurrency) throws IOException, InterruptedException;
+    float getExchangeRateWithAmount(String currentCurrency, String targetCurrency,int amount) throws IOException, InterruptedException;
+
 }

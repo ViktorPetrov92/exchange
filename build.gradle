@@ -14,17 +14,22 @@ repositories {
 
 dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-web'
-    testImplementation'org.springframework.boot:spring-boot-starter-test'
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testCompile('org.springframework.boot:spring-boot-starter-test')
+    testCompile 'org.junit.jupiter:junit-jupiter-engine:5.2.0'
+    testCompile('org.mockito:mockito-junit-jupiter:2.23.0')
 
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
     implementation 'mysql:mysql-connector-java'
+    implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
+    compile group: 'org.springframework.data', name: 'spring-data-jpa', version: '2.3.3.RELEASE'
+
 
     implementation 'junit:junit:4.13'
 
     compile group: 'org.json', name: 'json', version: '20190722'
-
-    implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
-
+    compile group: 'io.springfox', name: 'springfox-swagger2', version: '2.9.2'
+    compile group: 'io.springfox', name: 'springfox-swagger-ui', version: '2.9.2'
     compileOnly 'org.projectlombok:lombok:1.18.12'
     annotationProcessor 'org.projectlombok:lombok:1.18.12'
 }

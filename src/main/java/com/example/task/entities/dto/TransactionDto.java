@@ -11,7 +11,7 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class TransactionDTO {
+public class TransactionDto {
     float currentValue;
     String currentCurrency;
     String targetCurrency;
