@@ -17,7 +17,10 @@ import java.io.IOException;
 @RequiredArgsConstructor
 public class TransactionRestController {
     private static final String SERVER_ERROR = "Transaction unavailable at the moment. Try again in few minutes";
+    private static final String INVALID_AMOUNT = "Current amount must be a positive number!";
+
     private final TransactionService transactionService;
+
 
     /**
      * {@code GET /rate} : Get exchange rate between two currency's
@@ -51,10 +54,13 @@ public class TransactionRestController {
     public float getRateWithAmount(
             @RequestParam String currentCurrency,
             @RequestParam String targetCurrency,
-            @RequestParam int amount) {
+            @RequestParam String amount) {
         try {
-            return transactionService.getExchangeRateWithAmount(currentCurrency, targetCurrency, amount);
-        } catch (NumberFormatException | InvalidInputException nfe) {
+            int amountInt = Integer.parseInt(amount);
+            return transactionService.getExchangeRateWithAmount(currentCurrency, targetCurrency, amountInt);
+        } catch (NumberFormatException nfe) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,INVALID_AMOUNT);
+        } catch (InvalidInputException nfe) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, nfe.getMessage());
         } catch (IOException | InterruptedException ex) {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, SERVER_ERROR);

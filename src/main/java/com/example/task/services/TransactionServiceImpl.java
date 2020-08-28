@@ -26,6 +26,8 @@ import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.UUID;
 
+import static java.lang.String.format;
+
 @Service
 @RequiredArgsConstructor
 public class TransactionServiceImpl implements TransactionService {
@@ -34,18 +36,20 @@ public class TransactionServiceImpl implements TransactionService {
 
     private static final String EXCHANGE_URI = "https://api.exchangerate.host/latest?base=";
     private static final String TIME_FORMAT = "yyyy-MM-dd HH:mm:ss";
+    private static final String INVALID_CURRENCY = "Select %s currency";
+    private static final String INVALID_AMOUNT = "Current %f must be a positive number!";
 
     // This is a function to create and store new transaction in database
     @Override
     public Transaction create(TransactionDto dto) {
         if (dto.getCurrentCurrency().equals("")) {
-            throw new InvalidInputException("Select current currency");
+            throw new InvalidInputException(format(INVALID_CURRENCY, dto.getCurrentCurrency()));
         } else if (dto.getTargetCurrency().equals("")) {
-            throw new InvalidInputException("Select target currency");
+            throw new InvalidInputException(format(INVALID_CURRENCY, dto.getTargetCurrency()));
         } else if (dto.getCurrentValue() == 0 || dto.getCurrentValue() < 0 || !isNumber(Float.toString(dto.getCurrentValue()))) {
-            throw new InvalidInputException("Current amount must be a positive number!");
+            throw new InvalidInputException(format(INVALID_AMOUNT, dto.getCurrentValue()));
         } else if (dto.getTargetValue() == 0 || dto.getTargetValue() < 0 || !isNumber(Float.toString(dto.getTargetValue()))) {
-            throw new InvalidInputException("Target amount must be a positive number!");
+            throw new InvalidInputException(format(INVALID_AMOUNT, dto.getTargetValue()));
         } else {
             Transaction transaction = new Transaction();
             transaction.setUniqueId(GenerateUniqueId());
@@ -71,9 +75,9 @@ public class TransactionServiceImpl implements TransactionService {
     @Override
     public float getExchangeRate(String currentCurrency, String targetCurrency) throws IOException, InterruptedException {
         if (currentCurrency.equals("")) {
-            throw new InvalidInputException("Select current currency");
+            throw new InvalidInputException(format(INVALID_CURRENCY, currentCurrency));
         } else if (targetCurrency.equals("")) {
-            throw new InvalidInputException("Select target currency");
+            throw new InvalidInputException(format(INVALID_CURRENCY, targetCurrency));
         } else {
             HttpClient client = HttpClient.newHttpClient();
             HttpRequest request = HttpRequest.newBuilder()
@@ -91,11 +95,11 @@ public class TransactionServiceImpl implements TransactionService {
     @Override
     public float getExchangeRateWithAmount(String currentCurrency, String targetCurrency, int amount) throws IOException, InterruptedException {
         if (currentCurrency.equals("")) {
-            throw new InvalidInputException("Select current currency!");
+            throw new InvalidInputException(format(INVALID_CURRENCY,currentCurrency));
         } else if (targetCurrency.equals("")) {
-            throw new InvalidInputException("Select target currency!");
+            throw new InvalidInputException(format(INVALID_CURRENCY,targetCurrency));
         } else if (amount == 0 || amount < 0 || !isNumber(Integer.toString(amount))) {
-            throw new InvalidInputException("Amount must be a positive number!");
+            throw new InvalidInputException(format(INVALID_AMOUNT,amount));
         } else {
             HttpClient client = HttpClient.newHttpClient();
             HttpRequest request = HttpRequest.newBuilder()

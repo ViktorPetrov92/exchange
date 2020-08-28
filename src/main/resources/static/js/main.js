@@ -38,9 +38,6 @@ function getExchange() {
         let amount = $("#exchange-value").val();
         let message = document.getElementById("error-panel");
 
-        if (amount === "") {
-            amount = 0;
-        }
         fetch(
             "/api/rate/amount?currentCurrency=" + currentCurrency + "&targetCurrency=" + targetCurrency + "&amount=" + amount
         ).then((res) => res.json())
