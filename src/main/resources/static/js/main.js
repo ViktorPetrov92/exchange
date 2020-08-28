@@ -18,7 +18,7 @@ function getExchangeCurrencyRate() {
             "/api/rate?currentCurrency=" + currentCurrency + "&targetCurrency=" + targetCurrency
         ).then((res) => res.json())
             .then(function (data) {
-                    if (data.status === 400) {
+                    if (data.status === 400 || data.status === 500) {
                         error.innerHTML = data.message;
                     } else {
                         $('#result').html(currentCurrency + ": 1 <==> " + targetCurrency + " : " + data);
@@ -45,7 +45,7 @@ function getExchange() {
             "/api/rate/amount?currentCurrency=" + currentCurrency + "&targetCurrency=" + targetCurrency + "&amount=" + amount
         ).then((res) => res.json())
             .then(function (data) {
-                if (data.status === 400) {
+                if (data.status === 400 || data.status === 500) {
                     message.innerHTML = data.message;
                 } else {
                     let requestBody = {

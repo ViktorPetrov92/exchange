@@ -35,7 +35,7 @@ public class TransactionServiceImpl implements TransactionService {
     private static final String EXCHANGE_URI = "https://api.exchangerate.host/latest?base=";
     private static final String TIME_FORMAT = "yyyy-MM-dd HH:mm:ss";
 
-    // This is a function to create and store new transaction in database.
+    // This is a function to create and store new transaction in database
     @Override
     public Transaction create(TransactionDto dto) {
         if (dto.getCurrentCurrency().equals("")) {
@@ -60,13 +60,14 @@ public class TransactionServiceImpl implements TransactionService {
         }
     }
 
-    // Function to simply get all transaction by given date
+    // Function to get transaction by given date
     @Override
     public Page<Transaction> getTransactionsByDate(String date, Pageable pageable) {
         pageable = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), Sort.by("date").descending());
         return transactionRepository.findAllByDateContaining(date, pageable);
     }
 
+    //Function to get exchange rate between two currency's
     @Override
     public float getExchangeRate(String currentCurrency, String targetCurrency) throws IOException, InterruptedException {
         if (currentCurrency.equals("")) {
@@ -86,6 +87,7 @@ public class TransactionServiceImpl implements TransactionService {
 
     }
 
+    //Function to get exchange rate between two currency's with given amount
     @Override
     public float getExchangeRateWithAmount(String currentCurrency, String targetCurrency, int amount) throws IOException, InterruptedException {
         if (currentCurrency.equals("")) {
@@ -103,12 +105,11 @@ public class TransactionServiceImpl implements TransactionService {
                     .build();
 
             String str = mapResponseToString(client, request);
-
             return Float.parseFloat(str);
         }
     }
 
-
+    //Function to map the response from api.exchangerate.host to String
     private String mapResponseToString(HttpClient client, HttpRequest request) throws IOException, InterruptedException {
         HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
         ObjectMapper mapper = new ObjectMapper();
@@ -129,6 +130,7 @@ public class TransactionServiceImpl implements TransactionService {
         return DateTimeFormatter.ofPattern(TIME_FORMAT).format(localDate);
     }
 
+    //Check if given input is number
     private boolean isNumber(String num) {
         try {
             Double test = Double.parseDouble(num);
